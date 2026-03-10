@@ -1,4 +1,4 @@
-const API_URL = "https://verifica-tpsit.onrender.com";
+const API_URL = "https://verifica-tpsit.onrender.com/api";
 
 // 1. Carica l'utente (Simuliamo l'utente con ID 1 per il compito)
 async function caricaDati() {
