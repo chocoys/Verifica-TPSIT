@@ -1,4 +1,4 @@
-import 'dotenv/config'; 
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { createClient } from '@supabase/supabase-js';
@@ -14,6 +14,17 @@ app.get('/api/products', async (req, res) => {
     const { data, error } = await supabase.from('products').select('*');
     if (error) return res.status(500).json(error);
     res.json(data);
+});
+
+// 2. POST AGGIUNGI PRODOTTO (Admin)
+app.post('/api/products', async (req, res) => {
+    const { name, price, stock } = req.body;
+    const { data, error } = await supabase
+        .from('products')
+        .insert([{ name, price: parseInt(price), stock: parseInt(stock) }]);
+    
+    if (error) return res.status(500).json(error);
+    res.json({ message: "Prodotto aggiunto correttamente!" });
 });
 
 // 2. GET SALDO UTENTE (Simuliamo utente con ID 1)
@@ -44,3 +55,6 @@ app.post('/api/buy', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server E-Commerce pronto sulla porta ${PORT}`));
+
+
+
