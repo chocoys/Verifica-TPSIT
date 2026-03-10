@@ -54,7 +54,7 @@ async function aggiungiProdotto() {
         body: JSON.stringify({ name, price, stock })
     });
 
-    alert("Prodotto aggiunto!");
+    alert("Se il prodotto è stato aggiunto correttamente, ricarica la pagina per vedere le modifiche.");
     caricaDati(); // Ricarica la lista
 }
 
