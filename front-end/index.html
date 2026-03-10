@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>E-Commerce TPSIT</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>🛒 My Shop Online</h1>
+    
+    <!-- VISTA UTENTE -->
+    <div class="card" id="user-view">
+        <h2>👤 Profilo Utente</h2>
+        <p>Nome: <strong id="user-name">-</strong></p>
+        <p>Saldo: <strong id="user-credits">0</strong> Crediti</p>
+    </div>
+
+    <div class="card">
+        <h2>📦 Catalogo Prodotti</h2>
+        <div id="products-list">Caricamento prodotti...</div>
+    </div>
+
+    <hr>
+
+    <!-- VISTA ADMIN -->
+    <div class="card" style="background: #e9ecef;">
+        <h2>🛠 Dashboard Admin</h2>
+        <p>Aggiungi un nuovo prodotto al database:</p>
+        <input type="text" id="admin-p-name" placeholder="Nome Prodotto">
+        <input type="number" id="admin-p-price" placeholder="Prezzo">
+        <input type="number" id="admin-p-stock" placeholder="Stock iniziale">
+        <button class="admin" onclick="aggiungiProdotto()">➕ Pubblica Prodotto</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
