@@ -14,4 +14,4 @@ I controlli di validità sono implementati **lato server** per prevenire transaz
 
 ## Link Progetto
 - **Backend (Render):** https://verifica-tpsit.onrender.com
-- **Frontend (GitHub Pages):** https://chocoys.github.io/Verifica-TPSIT/
+- **Frontend (GitHub Pages):** https://chocoys.github.io/Verifica-TPSIT/front-end
