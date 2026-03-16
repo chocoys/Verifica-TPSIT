@@ -1,37 +1,45 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>E-Commerce TPSIT</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore</title>
 </head>
+
 <body>
-    <h1>🛒 My Shop Online</h1>
-    
-    <!-- VISTA UTENTE -->
-    <div class="card" id="user-view">
-        <h2>👤 Profilo Utente</h2>
-        <p>Nome: <strong id="user-name">-</strong></p>
-        <p>Saldo: <strong id="user-credits">0</strong> Crediti</p>
+    <nav class="navbar">
+        <strong>🚀 TechStore</strong>
+        <div id="nav-auth">
+            <span id="display-user"></span>
+            <button onclick="logout()" style="width:auto; background:#ef4444; margin-left:10px">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- SEZIONE LOGIN/REG -->
+        <div id="auth-section" class="card">
+            <h2 id="auth-title">Login</h2>
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Password">
+            <div id="reg-fields" class="hidden">
+                <input type="text" id="name" placeholder="Nome Completo">
+            </div>
+            <button id="btn-auth" onclick="handleAuth()">Accedi</button>
+            <p style="text-align:center; cursor:pointer" onclick="toggleAuthMode()" id="auth-toggle">Non hai un account?
+                Registrati</p>
+        </div>
+
+        <!-- SEZIONE SHOP -->
+        <div id="shop-section" class="hidden">
+            <div class="card" style="margin-bottom:2rem">
+                <h3>Il tuo Saldo: <span id="user-credits" class="badge">0</span> Crediti</h3>
+            </div>
+            <h2>Catalogo Prodotti</h2>
+            <div id="products-grid" class="grid"></div>
+        </div>
     </div>
-
-    <div class="card">
-        <h2>📦 Catalogo Prodotti</h2>
-        <div id="products-list">Caricamento prodotti...</div>
-    </div>
-
-    <hr>
-
-    <!-- VISTA ADMIN -->
-    <div class="card" style="background: #e9ecef;">
-        <h2>🛠 Dashboard Admin</h2>
-        <p>Aggiungi un nuovo prodotto al database:</p>
-        <input type="text" id="admin-p-name" placeholder="Nome Prodotto">
-        <input type="number" id="admin-p-price" placeholder="Prezzo">
-        <input type="number" id="admin-p-stock" placeholder="Stock iniziale">
-        <button class="admin" onclick="aggiungiProdotto()">➕ Pubblica Prodotto</button>
-    </div>
-
     <script src="script.js"></script>
 </body>
+
 </html>

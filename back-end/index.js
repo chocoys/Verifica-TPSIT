@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import bcrypt from 'bcrypt';
 import { createClient } from '@supabase/supabase-js';
 
 const app = express();
@@ -9,52 +10,55 @@ app.use(express.json());
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-// 1. GET CATALOGO PRODOTTI
-app.get('/api/products', async (req, res) => {
-    const { data, error } = await supabase.from('products').select('*');
-    if (error) return res.status(500).json(error);
-    res.json(data);
-});
+// --- AUTHENTICATION ---
 
-// 2. POST AGGIUNGI PRODOTTO (Admin)
-app.post('/api/products', async (req, res) => {
-    const { name, price, stock } = req.body;
-    const { data, error } = await supabase
-        .from('products')
-        .insert([{ name, price: parseInt(price), stock: parseInt(stock) }]);
+// REGISTRAZIONE
+app.post('/api/register', async (req, res) => {
+    const { name, email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
     
-    if (error) return res.status(500).json(error);
-    res.json({ message: "Prodotto aggiunto correttamente!" });
+    const { data, error } = await supabase.from('users')
+        .insert([{ name, email, password: hashedPassword, credits: 100, is_admin: false }]);
+
+    if (error) return res.status(400).json({ error: "Email già registrata" });
+    res.json({ message: "Registrazione completata! Ora puoi loggare." });
 });
 
-// 2. GET SALDO UTENTE (Simuliamo utente con ID 1)
-app.get('/api/user/1', async (req, res) => {
-    const { data, error } = await supabase.from('users').select('*').eq('id', 1).single();
-    if (error) return res.status(500).json(error);
-    res.json(data);
+// LOGIN
+app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+    const { data: user, error } = await supabase.from('users').select('*').eq('email', email).single();
+
+    if (error || !user) return res.status(401).json({ error: "Utente non trovato" });
+
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) return res.status(401).json({ error: "Password errata" });
+
+    // Ritorna l'utente senza la password per sicurezza
+    const { password: _, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
 });
 
-// 3. LOGICA DI ACQUISTO (Punto cruciale per il 10)
+// --- SHOP LOGIC ---
+
+app.get('/api/products', async (req, res) => {
+    const { data, error } = await supabase.from('products').select('*').order('name');
+    res.json(data || []);
+});
+
 app.post('/api/buy', async (req, res) => {
     const { productId, userId } = req.body;
 
-    // Recupera prodotto e utente
     const { data: product } = await supabase.from('products').select('*').eq('id', productId).single();
     const { data: user } = await supabase.from('users').select('*').eq('id', userId).single();
 
-    // CONTROLLI LATO SERVER (Obbligatori nel compito)
-    if (product.stock <= 0) return res.status(400).json({ error: "Prodotto esaurito!" });
-    if (user.credits < product.price) return res.status(400).json({ error: "Crediti insufficienti!" });
+    if (!product || product.stock <= 0) return res.status(400).json({ error: "Esaurito" });
+    if (!user || user.credits < product.price) return res.status(400).json({ error: "Crediti insufficienti" });
 
-    // Esegui transazione (riduci stock e scala crediti)
     await supabase.from('products').update({ stock: product.stock - 1 }).eq('id', productId);
     await supabase.from('users').update({ credits: user.credits - product.price }).eq('id', userId);
 
-    res.json({ message: "Acquisto completato!" });
+    res.json({ message: "Acquisto riuscito!" });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server E-Commerce pronto sulla porta ${PORT}`));
-
-
-
+app.listen(process.env.PORT || 3000, () => console.log("Security Server Online"));
